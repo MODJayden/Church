@@ -304,7 +304,8 @@ const Home = () => {
               </Button>
             </Link> */}
           </div>
-          {/* Image Column */}
+          {/* Image Column */} 
+          
           <div className="order-1 md:order-1">
             <img
               src={aboutUsImagePath}
