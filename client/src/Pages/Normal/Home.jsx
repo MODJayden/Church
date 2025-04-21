@@ -305,7 +305,7 @@ const Home = () => {
             </Link> */}
           </div>
           {/* Image Column */} 
-          
+
           <div className="order-1 md:order-1">
             <img
               src={aboutUsImagePath}
