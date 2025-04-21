@@ -5,18 +5,18 @@ import apostle from "../../assets/apostle.png";
 import offering from "../../assets/offering.png";
 import emblem from "../../assets/throneroom.png";
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+/* import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { MapPin, Target, Eye, CheckCircle } from "lucide-react";
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import 'leaflet/dist/leaflet.css'; */
 
 // Fix Leaflet default icon issue
-delete L.Icon.Default.prototype._getIconUrl;
+/* delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
   iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
-});
+}); */
 
 // Image URLs (same as before)
 const backgroundImages = [
@@ -305,18 +305,17 @@ const Home = () => {
           </div>
         </div>
       </section>
-      {/* --- Location Map Section --- */}
-      <section className="z-0 bg-gray-100 py-16 md:py-24">
+
+      {/* <section className="z-0 bg-gray-100 py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-blue-500 mb-4">
             Visit Us
           </h2>
-          {/* Add address text with icon */}
           <p className="flex items-center justify-center gap-2 text-gray-600 text-lg mb-8">
             <MapPin size={20} className="text-blue-500" />
             Kasoa Old Bortianor, close to Bojo Beach
           </p>
-          {/* Ensure Leaflet object is loaded before rendering map */}
+        
           {L && (
             <MapContainer
               center={churchPosition}
@@ -334,7 +333,6 @@ const Home = () => {
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
               <Marker position={churchPosition}>
-                {/* Updated Popup with Image */}
                 <Popup minWidth={200}>
                   <img
                     src={churchBuildingImagePath}
@@ -349,8 +347,8 @@ const Home = () => {
             </MapContainer>
           )}
         </div>
-      </section>
-      {/* --- End Location Map Section --- */}
+      </section> */}
+      
     </div>
   );
 };
