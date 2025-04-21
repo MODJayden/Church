@@ -60,24 +60,7 @@ const Home = () => {
   }, []);
 
   // Dynamically import Leaflet Icon only on client-side
-  const [L, setL] = useState(null);
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      import("leaflet").then((leaflet) => {
-        setL(leaflet);
-        // Fix default icon path issue with build tools
-        delete leaflet.Icon.Default.prototype._getIconUrl;
-        leaflet.Icon.Default.mergeOptions({
-          iconRetinaUrl:
-            "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-          iconUrl:
-            "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-          shadowUrl:
-            "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
-        });
-      });
-    }
-  }, []);
+ 
 
   return (
     <div className="flex flex-col">
