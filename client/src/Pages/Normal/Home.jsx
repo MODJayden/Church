@@ -4,6 +4,10 @@ import { Button } from "../../components/ui/button";
 import apostle from "../../assets/apostle.png";
 import offering from "../../assets/offering.png";
 import emblem from "../../assets/throneroom.png";
+import banner from "../../assets/banner1.jpg";
+import banner2 from "../../assets/banner2.jpg";
+import banner3 from "../../assets/banner3.jpg";
+import banner4 from "../../assets/banner4.jpg";
 
 import { CheckCircle, MapPin } from "lucide-react";
 /* import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -19,12 +23,7 @@ L.Icon.Default.mergeOptions({
 }); */
 
 // Image URLs (same as before)
-const backgroundImages = [
-  "https://images.unsplash.com/photo-1513159446162-543e2e47e944?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-  "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1476&q=80",
-  "https://images.unsplash.com/photo-1489269919801-b245343311f0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
-  "https://images.unsplash.com/photo-1584485162442-06517619191b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1548&q=80",
-];
+const backgroundImages = [banner2, banner, banner3, banner4];
 
 // --- TODO: Replace with the actual path to your pioneer image ---
 const pioneerImagePath = apostle;
@@ -58,7 +57,7 @@ const Home = () => {
 
     return () => clearInterval(intervalId); // Cleanup interval on component unmount
   }, []);
- 
+
   return (
     <div className="flex flex-col">
       {" "}
@@ -98,7 +97,6 @@ const Home = () => {
       </div>
       {/* --- End Hero Section --- */}
       {/* --- About Us Section --- */}
-    
       {/* --- End About Us Section --- */}
       {/* --- Mission & Vision Section --- */}
       <section className="bg-blue-50 py-16 md:py-24">
@@ -294,7 +292,7 @@ const Home = () => {
               </Button>
             </Link> */}
           </div>
-          {/* Image Column */} 
+          {/* Image Column */}
 
           <div className="order-1 md:order-1">
             <img
@@ -305,7 +303,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
       {/* <section className="z-0 bg-gray-100 py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-blue-500 mb-4">
@@ -348,7 +345,6 @@ const Home = () => {
           )}
         </div>
       </section> */}
-      
     </div>
   );
 };
