@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "../../components/ui/button"; // Keep Button import
+import { Button } from "../../components/ui/button";
 import apostle from "../../assets/apostle.png";
 import offering from "../../assets/offering.png";
 import emblem from "../../assets/throneroom.png";
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"; // Import Leaflet components
-import { MapPin, Target, Eye, CheckCircle } from "lucide-react"; // Import MapPin, Target, and Eye icons
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapPin, Target, Eye, CheckCircle } from "lucide-react";
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// Fix Leaflet default icon issue
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
+});
 
 // Image URLs (same as before)
 const backgroundImages = [
