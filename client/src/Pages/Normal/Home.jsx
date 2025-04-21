@@ -5,8 +5,8 @@ import apostle from "../../assets/apostle.png";
 import offering from "../../assets/offering.png";
 import emblem from "../../assets/throneroom.png";
 
+import { CheckCircle, MapPin } from "lucide-react";
 /* import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { MapPin, Target, Eye, CheckCircle } from "lucide-react";
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css'; */
 
