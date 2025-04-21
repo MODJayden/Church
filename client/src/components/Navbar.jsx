@@ -23,8 +23,8 @@ const Navbar = () => {
       <NavLink to="/gallery" className={linkClass}>
         Gallery
       </NavLink>
-      <NavLink to="/give-offering" className={linkClass}>
-        Give Offering
+      <NavLink to="/Calender" className={linkClass}>
+        Calender
       </NavLink>
       <NavLink to="/gates" className={linkClass}>
         Gates
@@ -61,14 +61,14 @@ const Navbar = () => {
         <Image size={20} />
       </NavLink>
       <NavLink
-        to="/give-offering"
+        to="/calender"
         className={({ isActive }) =>
           `${linkClass({
             isActive,
           })} p-2 flex items-center gap-2 justify-between hover:bg-blue-100 transition-colors duration-150 rounded-md`
         }
       >
-        Give Offering
+        Calender
         <HandCoins size={20} />
       </NavLink>
       <NavLink
