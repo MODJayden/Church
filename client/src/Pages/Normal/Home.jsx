@@ -58,10 +58,7 @@ const Home = () => {
 
     return () => clearInterval(intervalId); // Cleanup interval on component unmount
   }, []);
-
-  // Dynamically import Leaflet Icon only on client-side
  
-
   return (
     <div className="flex flex-col">
       {" "}
