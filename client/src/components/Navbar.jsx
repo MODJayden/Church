@@ -105,9 +105,11 @@ const Navbar = () => {
         {desktopNavLinks}
       </ul>
       <div className="hidden md:block">
-        <Button variant="outline" className="bg-blue-500 text-white">
-          Become a Member
-        </Button>
+        <NavLink to={"/membership"}>
+          <Button variant="outline" className="bg-blue-500 text-white">
+            Become a Member
+          </Button>
+        </NavLink>
       </div>
       <div className="md:hidden">
         <Sheet>
@@ -127,12 +129,14 @@ const Navbar = () => {
               {mobileNavLinks}
             </div>
             <SheetFooter className="mt-auto pt-4 border-t">
-              <Button
-                variant="outline"
-                className="bg-blue-500 text-white w-full"
-              >
-                Become a Member
-              </Button>
+              <NavLink to={"/membership"}>
+                <Button
+                  variant="outline"
+                  className="bg-blue-500 text-white w-full"
+                >
+                  Become a Member
+                </Button>
+              </NavLink>
             </SheetFooter>
           </SheetContent>
         </Sheet>

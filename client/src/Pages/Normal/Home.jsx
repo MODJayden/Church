@@ -303,6 +303,28 @@ const Home = () => {
           </div>
         </div>
       </section>
+            {/* --- Location Section --- */}
+            <section className="bg-gray-100 py-16 md:py-24">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-blue-500 mb-4">
+            Visit Us
+          </h2>
+          <div className="flex flex-col items-center justify-center gap-4">
+            <div className="flex items-center gap-2 text-gray-600 text-lg mb-8">
+              <MapPin size={24} className="text-blue-500" />
+              <p>The church is located at Kasoa, Old Bortianor, close to Bojo Beach</p>
+            </div>
+            
+            {/* Uncomment this section if you want to enable the map */}
+           
+            <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
+              <p className="text-gray-500">Map would be displayed here</p>
+            </div>
+            
+          </div>
+        </div>
+      </section>
+      {/* --- End Location Section --- */}
       {/* <section className="z-0 bg-gray-100 py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-blue-500 mb-4">
