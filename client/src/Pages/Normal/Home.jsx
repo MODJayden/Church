@@ -83,6 +83,7 @@ const Home = () => {
           <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
             Welcome to Throneroom Int.
           </h1>
+          <h3>Our year of Revival</h3>
           <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto drop-shadow-md">
             Experience fellowship, growth, and purpose with us. Find your place
             in our vibrant community.
