@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Button } from "./ui/button";
 import {
@@ -11,6 +12,7 @@ import {
 import { Menu, Home, Image, HandCoins, DoorOpen, BookOpen } from "lucide-react";
 
 const Navbar = () => {
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const linkClass = ({ isActive }) =>
     isActive ? "text-blue-700 font-bold" : "";
 
@@ -45,6 +47,7 @@ const Navbar = () => {
             isActive,
           })} p-2 flex items-center justify-between gap-2 hover:bg-blue-100 transition-colors duration-150 rounded-md`
         }
+        onClick={() => setIsSheetOpen(false)}
       >
         Home
         <Home size={20} />
@@ -56,6 +59,7 @@ const Navbar = () => {
             isActive,
           })} p-2 flex items-center gap-2 justify-between hover:bg-blue-100 transition-colors duration-150 rounded-md`
         }
+        onClick={() => setIsSheetOpen(false)}
       >
         Gallery
         <Image size={20} />
@@ -67,6 +71,7 @@ const Navbar = () => {
             isActive,
           })} p-2 flex items-center gap-2 justify-between hover:bg-blue-100 transition-colors duration-150 rounded-md`
         }
+        onClick={() => setIsSheetOpen(false)}
       >
         Calender
         <HandCoins size={20} />
@@ -78,6 +83,7 @@ const Navbar = () => {
             isActive,
           })} p-2 flex items-center gap-2 justify-between hover:bg-blue-100 transition-colors duration-150 rounded-md`
         }
+        onClick={() => setIsSheetOpen(false)}
       >
         Gates
         <DoorOpen size={20} />
@@ -89,6 +95,7 @@ const Navbar = () => {
             isActive,
           })} p-2 flex items-center gap-2 justify-between hover:bg-blue-100 transition-colors duration-150 rounded-md`
         }
+        onClick={() => setIsSheetOpen(false)}
       >
         Resources
         <BookOpen size={20} />
@@ -112,7 +119,7 @@ const Navbar = () => {
         </NavLink>
       </div>
       <div className="md:hidden">
-        <Sheet>
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon">
               <Menu className="h-6 w-6" />
@@ -129,7 +136,7 @@ const Navbar = () => {
               {mobileNavLinks}
             </div>
             <SheetFooter className="mt-auto pt-4 border-t">
-              <NavLink to={"/membership"}>
+              <NavLink to={"/membership"} onClick={() => setIsSheetOpen(false)}>
                 <Button
                   variant="outline"
                   className="bg-blue-500 text-white w-full"

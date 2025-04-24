@@ -8,6 +8,8 @@ import banner from "../../assets/banner1.jpg";
 import banner2 from "../../assets/banner2.jpg";
 import banner3 from "../../assets/banner3.jpg";
 import banner4 from "../../assets/banner4.jpg";
+import move from "../../assets/move.mp4";
+import { CalendarDays, Sparkles, ArrowRight } from "lucide-react";
 
 import { CheckCircle, MapPin } from "lucide-react";
 /* import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -184,6 +186,47 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <div className="bg-blue-50 border border-blue-100 rounded-lg mx-4 my-6 shadow-sm">
+        <div className="container mx-auto py-5 px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="hidden sm:flex bg-blue-100 p-3 rounded-full">
+                <CalendarDays className="h-6 w-6 text-blue-600" />
+              </div>
+              <div className="text-center md:text-left">
+                <div className="flex items-center gap-2 justify-center md:justify-start mb-1">
+                  <Sparkles className="h-4 w-4 text-blue-500 sm:hidden" />
+                  <h3 className="text-sm font-semibold text-blue-600 uppercase tracking-wider">
+                    Upcoming Event
+                  </h3>
+                </div>
+                <p className="text-lg font-medium text-gray-800">
+                  Shofar Camp 2025
+                </p>
+                <p className="text-sm text-gray-600">
+                  October 10-15, 2025 • Theme: "The Glory of the Latter House"
+                </p>
+                <p className="text-sm text-gray-600">
+                  @ University of Ghana 
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="border-blue-300 text-blue-600 hover:bg-blue-100 hover:text-blue-700 flex items-center gap-1"
+              >
+                Learn More
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1">
+                Register Now
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
       {/* --- End Mission & Vision Section --- */}
       {/* --- About the Pioneer Section --- */}
       <section className="bg-gray-50 py-16 md:py-24">
@@ -224,6 +267,47 @@ const Home = () => {
           </div>
         </div>
       </section>
+      
+      {/* --- New: Video Section --- */}
+      <section className="py-12 md:py-16 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl md:text-3xl font-bold text-blue-600">
+              Experience Our Worship
+            </h2>
+            <p className="text-gray-600 mt-2 max-w-2xl mx-auto">
+              Watch a glimpse of our vibrant worship services and community
+            </p>
+          </div>
+          
+          <div className="max-w-4xl mx-auto rounded-lg overflow-hidden shadow-xl">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-auto aspect-video object-cover"
+              poster="/path-to-your-poster-image.jpg" // Optional: add a poster frame
+            >
+              <source src={move} type="video/mp4" />
+              <source src="/path-to-your-video.webm" type="video/webm" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+
+          <div className="text-center mt-8">
+            <Link to="/gallery">
+              <Button
+                variant="outline"
+                className="border-blue-500 text-blue-600 hover:bg-blue-50"
+              >
+                View More Videos
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
       {/* --- End About the Pioneer Section --- */}
       {/* --- Partnership Section --- */}
       <section className="bg-white py-16 md:py-24">
@@ -242,7 +326,7 @@ const Home = () => {
               spreading hope and faith.
               {/* ------------------------------------------------------------- */}
             </p>
-            <Link to="/give-offering">
+            <Link to="/addgate">
               {" "}
               {/* TODO: Update link if needed */}
               <Button
@@ -303,8 +387,8 @@ const Home = () => {
           </div>
         </div>
       </section>
-            {/* --- Location Section --- */}
-            <section className="bg-gray-100 py-16 md:py-24">
+      {/* --- Location Section --- */}
+      <section className="bg-gray-100 py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-blue-500 mb-4">
             Visit Us
@@ -312,15 +396,17 @@ const Home = () => {
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="flex items-center gap-2 text-gray-600 text-lg mb-8">
               <MapPin size={24} className="text-blue-500" />
-              <p>The church is located at Kasoa, Old Bortianor, close to Bojo Beach</p>
+              <p>
+                The church is located at Kasoa, Old Bortianor, close to Bojo
+                Beach
+              </p>
             </div>
-            
+
             {/* Uncomment this section if you want to enable the map */}
-           
+
             <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
               <p className="text-gray-500">Map would be displayed here</p>
             </div>
-            
           </div>
         </div>
       </section>
