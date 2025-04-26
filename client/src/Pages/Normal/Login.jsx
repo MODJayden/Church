@@ -3,14 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import emblem from "../../assets/throneroom.png";
 import { Lock, Mail } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginMember } from "../../../store/userSlice";
 import { toast } from "sonner";
-
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { isLoading } = useSelector((state) => state.user);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -54,8 +54,8 @@ const Login = () => {
       try {
         dispatch(loginMember(formData)).then((res) => {
           console.log(res);
-          
-          if(res?.payload?.success){
+
+          if (res?.payload?.success) {
             toast("Login successful");
           }
         });
@@ -193,9 +193,9 @@ const Login = () => {
                   <Button
                     type="submit"
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md shadow-sm"
-                    disabled={isSubmitting}
+                    disabled={isLoading}
                   >
-                    {isSubmitting ? "Signing in..." : "Sign in"}
+                    {isLoading ? "Signing in..." : "Sign in"}
                   </Button>
                 </div>
               </form>

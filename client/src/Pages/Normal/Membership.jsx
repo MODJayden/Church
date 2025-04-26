@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
 import emblem from "../../assets/throneroom.png";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createMember } from "../../../store/userSlice";
 import { toast } from "sonner";
 
@@ -24,6 +24,7 @@ const Membership = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const navigate = useNavigate();
+  const { isLoading } = useSelector((state) => state.user);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -90,7 +91,6 @@ const Membership = () => {
             confirmPassword: "",
           });
         } else {
-          
           toast("Application submission failed");
           setSubmitSuccess(false);
         }
@@ -304,9 +304,9 @@ const Membership = () => {
                   <Button
                     type="submit"
                     className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white"
-                    disabled={isSubmitting}
+                    disabled={isLoading}
                   >
-                    {isSubmitting ? "Submitting..." : "Submit Application"}
+                    {isLoading ? "Submitting..." : "Submit Application"}
                   </Button>
 
                   <div className="text-center sm:text-left">
