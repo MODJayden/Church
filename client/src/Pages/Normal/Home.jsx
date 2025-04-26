@@ -12,17 +12,7 @@ import move from "../../assets/move.mp4";
 import { CalendarDays, Sparkles, ArrowRight } from "lucide-react";
 
 import { CheckCircle, MapPin } from "lucide-react";
-/* import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css'; */
 
-// Fix Leaflet default icon issue
-/* delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
-}); */
 
 // Image URLs (same as before)
 const backgroundImages = [banner2, banner, banner3, banner4];
@@ -50,6 +40,8 @@ const aboutUsImagePath = emblem;
 const Home = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+
+  
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentImageIndex((prevIndex) =>
@@ -88,7 +80,7 @@ const Home = () => {
             Experience fellowship, growth, and purpose with us. Find your place
             in our vibrant community.
           </p>
-          <Link to="/membership">
+          <Link to="/auth/membership">
             <Button
               size="lg"
               className="bg-blue-600 hover:bg-blue-700 text-white border border-transparent hover:border-white transition-all"
@@ -98,10 +90,7 @@ const Home = () => {
           </Link>
         </div>
       </div>
-      {/* --- End Hero Section --- */}
-      {/* --- About Us Section --- */}
-      {/* --- End About Us Section --- */}
-      {/* --- Mission & Vision Section --- */}
+ 
       <section className="bg-blue-50 py-16 md:py-24">
         <div className="container mx-auto px-4 max-w-4xl">
           <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-12 text-center">

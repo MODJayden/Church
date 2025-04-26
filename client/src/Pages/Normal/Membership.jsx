@@ -2,9 +2,13 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import emblem from "../../assets/throneroom.png";
+import { useDispatch } from "react-redux";
+import { createMember } from "../../../store/userSlice";
+import { toast } from "sonner";
 
 const Membership = () => {
   // State for form fields
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: "",
     location: "",
@@ -13,6 +17,7 @@ const Membership = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    role: "member",
   });
 
   const [errors, setErrors] = useState({});
@@ -69,29 +74,25 @@ const Membership = () => {
     if (validateForm()) {
       setIsSubmitting(true);
 
-      try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // In a real app, you would send the data to your backend here
-        console.log("Form submitted:", formData);
-
-        setSubmitSuccess(true);
-        // Reset form after successful submission
-        setFormData({
-          name: "",
-          location: "",
-          phone: "",
-          occupation: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-        });
-      } catch (error) {
-        console.error("Submission error:", error);
-      } finally {
-        setIsSubmitting(false);
-      }
+      dispatch(createMember(formData)).then((res) => {
+        if (res.payload.success) {
+          toast("Application submitted successfully");
+          setSubmitSuccess(true);
+          setFormData({
+            name: "",
+            location: "",
+            phone: "",
+            occupation: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+          });
+        } else {
+          
+          toast("Application submission failed");
+          setSubmitSuccess(false);
+        }
+      });
     }
   };
 
@@ -310,7 +311,7 @@ const Membership = () => {
                     <p className="text-sm text-gray-500">
                       Already a member?{" "}
                       <Link
-                        to="/login"
+                        to="/auth/login"
                         className="font-medium text-blue-600 hover:text-blue-500"
                       >
                         Login here

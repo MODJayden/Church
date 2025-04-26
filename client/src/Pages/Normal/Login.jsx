@@ -1,10 +1,16 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import emblem from "../../assets/throneroom.png";
 import { Lock, Mail } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { loginMember } from "../../../store/userSlice";
+import { toast } from "sonner";
+
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -46,10 +52,13 @@ const Login = () => {
     if (validateForm()) {
       setIsSubmitting(true);
       try {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        console.log("Login submitted:", formData);
-        // Redirect or handle successful login here
+        dispatch(loginMember(formData)).then((res) => {
+          console.log(res);
+          
+          if(res?.payload?.success){
+            toast("Login successful");
+          }
+        });
       } catch (error) {
         console.error("Login error:", error);
         setErrors({
@@ -205,7 +214,7 @@ const Login = () => {
 
                 <div className="mt-4">
                   <Link
-                    to="/membership"
+                    to="/auth/membership"
                     className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
                   >
                     Create new account

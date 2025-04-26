@@ -1,6 +1,6 @@
 import Navbar from "./components/Navbar";
 import { Button } from "./components/ui/button";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "./Pages/Normal/Home";
 import Footer from "./components/Footer";
 import Membership from "./Pages/Normal/Membership";
@@ -13,27 +13,97 @@ import Activities from "./Pages/Admin/Activities";
 import PictureUpload from "./Pages/Admin/PictureUpload";
 import UploadResource from "./Pages/Admin/UploadResource";
 import AddGate from "./Pages/Admin/AddGate";
+import { useDispatch, useSelector } from "react-redux";
+import { use, useEffect, useState } from "react";
+import { checkAuth } from "../store/userSlice";
+import AdminLayout from "./Pages/Admin/AdminLayout";
+import Auth from "./Pages/CheckAuth";
+import SherpherdLayout from "./Pages/Shepherd/SherpherdLayout";
+import MemberHome from "./Pages/Shepherd/MemberHome";
+import MemberCalender from "./Pages/Shepherd/MemberCalender";
+import MemberGateDiscussion from "./Pages/Shepherd/MemberGateDiscussion";
+import Dashboard from "./Pages/Shepherd/Dashboard";
+import MemberGallery from "./Pages/Shepherd/MemberGallery";
+import { Check } from "lucide-react";
+import AuthLayout from "./Pages/Normal/AuthLayout";
+import NormalLayout from "./Pages/Normal/NormalLayout";
 
 const App = () => {
+  const dispatch = useDispatch();
+  const { user, isAuth, isloading } = useSelector((store) => store?.user);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    const token = JSON?.parse(sessionStorage?.getItem("token"));
+    if (token) {
+      dispatch(checkAuth(token)).finally(() => {
+        setAuthChecked(true);
+      });
+    } else {
+      setAuthChecked(true); // No token, no need to check auth
+    }
+  }, [dispatch]);
+
+  if (!authChecked) {
+    return <div className="bg-gray-50 h-screen" />;
+  }
+
   return (
     <>
-      <Navbar />
+      
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/membership" element={<Membership />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/gates" element={<Gates />} />
-        <Route path="/resources" element={<Resources />} />
-        <Route path="/gallery" element={<Gallery />} />
-        <Route path="/calender" element={<Calender />} />
+        <Route path="/" element={<NormalLayout />} >
+          <Route path="/" element={<Home />} />
+          <Route path="gates" element={<Gates />} />
+          <Route path="resources" element={<Resources />} />
+          <Route path="gallery" element={<Gallery />} />
+          <Route path="calender" element={<Calender />} />
+        </Route>
+
+        {/* auth */}
+        <Route
+          path="/auth"
+          element={
+            <Auth user={user} isAuth={isAuth} isLoading={isloading}>
+              <AuthLayout />
+            </Auth>
+          }
+        >
+          <Route path="login" element={<Login />} />
+          <Route path="membership" element={<Membership />} />
+        </Route>
 
         {/* Admin */}
+        <Route
+          path="/admin"
+          element={
+            <Auth user={user} isAuth={isAuth} isLoading={isloading}>
+              <AdminLayout />
+            </Auth>
+          }
+        >
+          <Route path="uploadresource" element={<UploadResource />} />
+          <Route path="activities" element={<Activities />} />
+          <Route path="upload" element={<PictureUpload />} />
+          <Route path="addgate" element={<AddGate />} />
+        </Route>
 
-        <Route path="/activities" element={<Activities />} />
-        <Route path="/upload" element={<PictureUpload />} />
-        <Route path="/addgate" element={<AddGate />} />
-
+        {/* sHERPHERD */}
+        <Route
+          path="/member"
+          element={
+            <Auth user={user} isAuth={isAuth} isLoading={isloading}>
+              <SherpherdLayout />
+            </Auth>
+          }
+        >
+          <Route path="memberHome" element={<MemberHome />} />
+          <Route path="activities" element={<MemberCalender />} />
+          <Route path="gatediscussion" element={<MemberGateDiscussion />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="gallery" element={<MemberGallery />} />
+        </Route>
       </Routes>
       <Footer />
     </>
