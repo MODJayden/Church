@@ -27,8 +27,8 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/member", memberRouter);
-app.use("/api/gate", gateRouter);
+app.use("api/member", memberRouter);
+app.use("api/gate", gateRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
