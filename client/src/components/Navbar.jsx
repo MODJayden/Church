@@ -136,12 +136,12 @@ const Navbar = () => {
               {mobileNavLinks}
             </div>
             <SheetFooter className="mt-auto pt-4 border-t">
-              <NavLink to={"/auth/membership"} onClick={() => setIsSheetOpen(false)}>
+              <NavLink to={"/auth/login"} onClick={() => setIsSheetOpen(false)}>
                 <Button
                   variant="outline"
                   className="bg-blue-500 text-white w-full"
                 >
-                  Become a Member
+                  Join us
                 </Button>
               </NavLink>
             </SheetFooter>

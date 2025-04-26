@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import emblem from "../../assets/throneroom.png";
 import { useDispatch } from "react-redux";
 import { createMember } from "../../../store/userSlice";
@@ -23,6 +23,7 @@ const Membership = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const navigate = useNavigate();
 
   // Handle input changes
   const handleChange = (e) => {
@@ -77,6 +78,7 @@ const Membership = () => {
       dispatch(createMember(formData)).then((res) => {
         if (res.payload.success) {
           toast("Application submitted successfully");
+          navigate("/auth/login");
           setSubmitSuccess(true);
           setFormData({
             name: "",

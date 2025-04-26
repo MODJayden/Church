@@ -13,7 +13,6 @@ import { CalendarDays, Sparkles, ArrowRight } from "lucide-react";
 
 import { CheckCircle, MapPin } from "lucide-react";
 
-
 // Image URLs (same as before)
 const backgroundImages = [banner2, banner, banner3, banner4];
 
@@ -40,8 +39,6 @@ const aboutUsImagePath = emblem;
 const Home = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-
-  
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentImageIndex((prevIndex) =>
@@ -75,12 +72,14 @@ const Home = () => {
           <h1 className="text-4xl md:text-6xl font-bold mb-4 drop-shadow-lg">
             Welcome to Throneroom Int.
           </h1>
-          <h3 className="text-xl md:text-2xl font-bold mb-2 drop-shadow-lg">Our year of Revival</h3>
+          <h3 className="text-xl md:text-2xl font-bold mb-2 drop-shadow-lg">
+            Our year of Revival
+          </h3>
           <p className="text-lg md:text-xl mb-8 max-w-2xl mx-auto drop-shadow-md">
             Experience fellowship, growth, and purpose with us. Find your place
             in our vibrant community.
           </p>
-          <Link to="/auth/membership">
+          <Link to="/auth/singup">
             <Button
               size="lg"
               className="bg-blue-600 hover:bg-blue-700 text-white border border-transparent hover:border-white transition-all"
@@ -90,7 +89,6 @@ const Home = () => {
           </Link>
         </div>
       </div>
- 
       <section className="bg-blue-50 py-16 md:py-24">
         <div className="container mx-auto px-4 max-w-4xl">
           <h2 className="text-3xl md:text-4xl font-bold text-blue-600 mb-12 text-center">
@@ -196,23 +194,16 @@ const Home = () => {
                 <p className="text-sm text-gray-600">
                   October 10-15, 2025 • Theme: "The Glory of the Latter House"
                 </p>
-                <p className="text-sm text-gray-600">
-                  @ University of Ghana 
-                </p>
+                <p className="text-sm text-gray-600">@ University of Ghana</p>
               </div>
             </div>
             <div className="flex gap-3">
-              <Button
-                variant="outline"
-                className="border-blue-300 text-blue-600 hover:bg-blue-100 hover:text-blue-700 flex items-center gap-1"
-              >
-                Learn More
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1">
-                Register Now
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+              <Link to="/upcoming">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1">
+                  Register Now
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -257,7 +248,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-      
       {/* --- New: Video Section --- */}
       <section className="py-12 md:py-16 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -269,7 +259,7 @@ const Home = () => {
               Watch a glimpse of our vibrant worship services and community
             </p>
           </div>
-          
+
           <div className="max-w-4xl mx-auto rounded-lg overflow-hidden shadow-xl">
             <video
               autoPlay
@@ -316,7 +306,7 @@ const Home = () => {
               spreading hope and faith.
               {/* ------------------------------------------------------------- */}
             </p>
-            <Link to="/addgate">
+            <Link to="/giving">
               {" "}
               {/* TODO: Update link if needed */}
               <Button

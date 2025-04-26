@@ -10,12 +10,19 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu, Home, Image, HandCoins, DoorOpen, BookOpen } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { signOut } from "../../store/userSlice";
+
 
 const AdminNavbar = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const dispatch = useDispatch();
   const linkClass = ({ isActive }) =>
     isActive ? "text-blue-700 font-bold" : "";
 
+  const handleSignOut = () => {
+    dispatch(signOut());
+  };
   // Define links WITHOUT icons for DESKTOP
   const desktopNavLinks = (
     <>
@@ -98,11 +105,11 @@ const AdminNavbar = () => {
         {desktopNavLinks}
       </ul>
       <div className="hidden md:block">
-        <NavLink to={"/auth/membership"}>
-          <Button variant="outline" className="bg-blue-500 text-white">
+     
+          <Button variant="outline" className="bg-blue-500 text-white" onClick={handleSignOut}>
             Sign Out
           </Button>
-        </NavLink>
+       
       </div>
       <div className="md:hidden">
         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
@@ -122,14 +129,15 @@ const AdminNavbar = () => {
               {mobileNavLinks}
             </div>
             <SheetFooter className="mt-auto pt-4 border-t">
-              <NavLink to={"/auth/membership"} onClick={() => setIsSheetOpen(false)}>
+              
                 <Button
                   variant="outline"
                   className="bg-blue-500 text-white w-full"
+                onClick={handleSignOut}
                 >
                   Sign Out
                 </Button>
-              </NavLink>
+              
             </SheetFooter>
           </SheetContent>
         </Sheet>

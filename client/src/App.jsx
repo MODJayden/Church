@@ -1,5 +1,4 @@
-import Navbar from "./components/Navbar";
-import { Button } from "./components/ui/button";
+
 import { Routes, Route, useLocation } from "react-router-dom";
 import Home from "./Pages/Normal/Home";
 import Footer from "./components/Footer";
@@ -14,7 +13,7 @@ import PictureUpload from "./Pages/Admin/PictureUpload";
 import UploadResource from "./Pages/Admin/UploadResource";
 import AddGate from "./Pages/Admin/AddGate";
 import { useDispatch, useSelector } from "react-redux";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { checkAuth } from "../store/userSlice";
 import AdminLayout from "./Pages/Admin/AdminLayout";
 import Auth from "./Pages/CheckAuth";
@@ -24,9 +23,10 @@ import MemberCalender from "./Pages/Shepherd/MemberCalender";
 import MemberGateDiscussion from "./Pages/Shepherd/MemberGateDiscussion";
 import Dashboard from "./Pages/Shepherd/Dashboard";
 import MemberGallery from "./Pages/Shepherd/MemberGallery";
-import { Check } from "lucide-react";
 import AuthLayout from "./Pages/Normal/AuthLayout";
 import NormalLayout from "./Pages/Normal/NormalLayout";
+import Giving from "./Pages/Normal/Giving";
+import Upcoming from "./Pages/Normal/Upcoming";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -56,9 +56,11 @@ const App = () => {
         <Route path="/" element={<NormalLayout />} >
           <Route path="/" element={<Home />} />
           <Route path="gates" element={<Gates />} />
+          <Route path="giving" element={<Giving />} />
           <Route path="resources" element={<Resources />} />
           <Route path="gallery" element={<Gallery />} />
           <Route path="calender" element={<Calender />} />
+          <Route path="upcoming" element={<Upcoming />} />
         </Route>
 
         {/* auth */}
@@ -71,7 +73,7 @@ const App = () => {
           }
         >
           <Route path="login" element={<Login />} />
-          <Route path="membership" element={<Membership />} />
+          <Route path="singup" element={<Membership />} />
         </Route>
 
         {/* Admin */}
@@ -99,6 +101,8 @@ const App = () => {
           }
         >
           <Route path="memberHome" element={<MemberHome />} />
+          <Route path="giving" element={<Giving />} />
+          <Route path="upcoming" element={<Upcoming/>} />
           <Route path="activities" element={<MemberCalender />} />
           <Route path="gatediscussion" element={<MemberGateDiscussion />} />
           <Route path="dashboard" element={<Dashboard />} />

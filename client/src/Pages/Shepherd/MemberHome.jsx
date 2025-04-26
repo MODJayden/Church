@@ -207,13 +207,13 @@ const Home = () => {
               </div>
             </div>
             <div className="flex gap-3">
-              <Button
-                variant="outline"
-                className="border-blue-300 text-blue-600 hover:bg-blue-100 hover:text-blue-700 flex items-center gap-1"
-              >
-                Learn More
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+             
+              <Link to="/upcoming">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1">
+                  Register Now
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
               <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1">
                 Register Now
                 <ArrowRight className="h-4 w-4" />
@@ -321,7 +321,7 @@ const Home = () => {
               spreading hope and faith.
               {/* ------------------------------------------------------------- */}
             </p>
-            <Link to="/addgate">
+            <Link to="/member/giving">
               {" "}
               {/* TODO: Update link if needed */}
               <Button
