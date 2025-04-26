@@ -13,7 +13,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://throneroom-int.onrender.com/"],
+    origin: ["http://localhost:5173", "https://throneroom-international.onrender.com"],
     methods: ["POST", "GET", "PUT", "DELETE"],
     allowedHeaders: [
       "Content-Type",
