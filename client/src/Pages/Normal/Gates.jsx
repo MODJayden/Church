@@ -1,49 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { MapPin, Users, Clock } from "lucide-react";
-
+import { useDispatch, useSelector } from "react-redux";
+import { use, useEffect } from "react";
+import { getAllGates } from "../../../store/gateSlice";
 // Sample gate data - replace with your actual data
-const gates = [
-  {
-    id: 1,
-    name: "Joy Gate",
-    description:
-      "Young adults ministry focused on spiritual growth and fellowship",
-    thumbnail: "/src/assets/gates/victory-gate.jpg", // Replace with actual image path
-    meetingTime: "Every Friday, 6:00 PM",
-    location: "Main Sanctuary",
-    leader: "Pastor John Mensah",
-  },
-  {
-    id: 2,
-    name: "Hallelujah Gate",
-    description: "Worship and creative arts ministry",
-    thumbnail: "/src/assets/gates/praise-gate.jpg", // Replace with actual image path
-    meetingTime: "Every Tuesday, 5:30 PM",
-    location: "Church Auditorium",
-    leader: "Minister Grace Owusu",
-  },
-  {
-    id: 3,
-    name: "Peace Gate",
-    description: "Evangelism and outreach ministry",
-    thumbnail: "/src/assets/gates/harvest-gate.jpg", // Replace with actual image path
-    meetingTime: "Every Saturday, 8:00 AM",
-    location: "Meeting Room 3",
-    leader: "Elder Kwame Asante",
-  },
-  {
-    id: 4,
-    name: "Power Gate",
-    description: "Bible study and discipleship group",
-    thumbnail: "/src/assets/gates/wisdom-gate.jpg", // Replace with actual image path
-    meetingTime: "Every Wednesday, 6:30 PM",
-    location: "Library Annex",
-    leader: "Deaconess Abena Boateng",
-  },
-];
+
 
 const Gates = () => {
+  const {gates} = useSelector((state) => state.gate);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllGates()).then((res) => {
+      console.log(res);
+    });
+  }, [dispatch]);
+
+
   return (
     <section className="bg-white py-18 md:py-24">
       <div className="container mx-auto px-4">
@@ -60,23 +33,12 @@ const Gates = () => {
 
         {/* Gates Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {gates.map((gate) => (
+          {gates?.map((gate) => (
             <div
               key={gate.id}
               className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow duration-300"
             >
-              {/* Gate Thumbnail */}
-              <div className="h-48 bg-gray-200 overflow-hidden">
-                <img
-                  src={gate.thumbnail}
-                  alt={gate.name}
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.src =
-                      "https://via.placeholder.com/400x300?text=Gate+Image"; // Fallback image
-                  }}
-                />
-              </div>
+             
 
               {/* Gate Details */}
               <div className="p-6">
@@ -97,7 +59,7 @@ const Gates = () => {
                   </div>
                   <div className="flex items-start gap-3">
                     <Users className="h-5 w-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">Led by {gate.leader}</span>
+                    <span className="text-gray-700">Led by {gate.gateLeader}</span>
                   </div>
                 </div>
 

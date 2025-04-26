@@ -6,13 +6,14 @@ const cors = require("cors");
 const connectDB = require("./database/db");
 const cookieParser = require("cookie-parser");
 const memberRouter = require("./router/member");
+const gateRouter = require("./router/gate");
 
 //connect to database
 connectDB();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://your-production-url.com"],
+    origin: ["http://localhost:5173", "https://throneroom-int.onrender.com/"],
     methods: ["POST", "GET", "PUT", "DELETE"],
     allowedHeaders: [
       "Content-Type",
@@ -27,6 +28,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/member", memberRouter);
+app.use("/api/gate", gateRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

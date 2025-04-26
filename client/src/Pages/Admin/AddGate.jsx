@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+
 import {
   Plus,
   Users,
@@ -37,6 +39,15 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addGate,
+  getAllGates,
+  updateGate,
+  deleteGate,
+  addGateMember,
+  deleteGateMember,
+} from "../../../store/gateSlice";
 
 const AddGate = () => {
   // State management
@@ -47,45 +58,35 @@ const AddGate = () => {
   const [isMemberDialogOpen, setIsMemberDialogOpen] = useState(false);
   const [selectedGate, setSelectedGate] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const { gates, isLoading } = useSelector((state) => state.gate);
+  const dispatch = useDispatch();
 
   // Sample data - replace with API calls
-  const [gates, setGates] = useState([
-    {
-      id: 1,
-      name: "Victory Gate",
-      description: "Young adults ministry focused on spiritual growth",
-      meetingTime: "Every Friday, 6:00 PM",
-      location: "Main Sanctuary",
-      leader: "Pastor John Mensah",
-      members: 24,
-      membersList: [
-        { id: 1, name: "Michael Boateng", joinDate: "2023-01-15" },
-        { id: 2, name: "Abena Asare", joinDate: "2023-02-20" },
-      ],
-      attendance: { weekly: 18, monthly: 72, yearly: 240 },
-    },
-    // ... other gates
-  ]);
-
   const [newGate, setNewGate] = useState({
     name: "",
     description: "",
     meetingTime: "",
     location: "",
-    leader: "",
+    gateLeader: "",
+    gateMembers: [],
   });
+
+  useEffect(() => {
+    dispatch(getAllGates()).then((res) => {
+      console.log(res);
+    });
+  }, [dispatch]);
 
   const [newMember, setNewMember] = useState({
     name: "",
-    joinDate: "",
   });
 
   // Filter gates based on search term
-  const filteredGates = gates.filter(
+  const filteredGates = gates?.filter(
     (gate) =>
-      gate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      gate.leader.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      gate.location.toLowerCase().includes(searchTerm.toLowerCase())
+      gate?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      gate?.gateLeader?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      gate?.location?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // Handle input changes
@@ -104,73 +105,79 @@ const AddGate = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    setTimeout(() => {
-      if (isEditMode) {
-        // Update existing gate
-        setGates((prev) =>
-          prev.map((gate) =>
-            gate.id === currentGateId ? { ...gate, ...newGate } : gate
-          )
-        );
-      } else {
-        // Create new gate
-        const gateWithId = {
-          ...newGate,
-          id: Date.now(),
-          members: 0,
-          membersList: [],
-          attendance: { weekly: 0, monthly: 0, yearly: 0 },
-        };
-        setGates((prev) => [...prev, gateWithId]);
-      }
+    if (isEditMode) {
+      // Update existing gate
+      dispatch(updateGate({ data: newGate, id: currentGateId })).then((res) => {
+        if (res?.payload?.success) {
+          dispatch(getAllGates());
+          toast("Gate updated successfully");
+        }
+      });
+    } else {
+      // Create new gate
+      dispatch(addGate(newGate)).then((res) => {
+        console.log(res);
+        if (res?.payload?.success) {
+          dispatch(getAllGates())
+          toast("Gate created successfully");
+        }
+      });
+    }
 
-      resetForm();
-      setIsSubmitting(false);
-    }, 1000);
+    resetForm();
+    setIsSubmitting(false);
   };
 
   // Add new member to gate
   const handleAddMember = (e) => {
     e.preventDefault();
-    const updatedGates = gates.map((gate) => {
-      if (gate.id === selectedGate.id) {
-        const memberWithId = {
-          ...newMember,
-          id: Date.now(),
-          joinDate:
-            newMember.joinDate || new Date().toISOString().split("T")[0],
-        };
-        return {
-          ...gate,
-          members: gate.members + 1,
-          membersList: [...gate.membersList, memberWithId],
-        };
+    dispatch(addGateMember({ data: newMember.name, id: selectedGate._id })).then((res) => {
+      if (res?.payload?.success) {
+        dispatch(getAllGates());
+        toast("Member added successfully");
       }
-      return gate;
     });
-
-    setGates(updatedGates);
-    setNewMember({ name: "", joinDate: "" });
+    setNewMember({ name: ""});
     setIsMemberDialogOpen(false);
   };
 
   // Edit gate
+
   const handleEditGate = (gate) => {
     setIsEditMode(true);
-    setCurrentGateId(gate.id);
+    setCurrentGateId(gate._id);
     setNewGate({
-      name: gate.name,
-      description: gate.description,
-      meetingTime: gate.meetingTime,
-      location: gate.location,
-      leader: gate.leader,
+      name: gate?.name || "",
+      description: gate?.description || "",
+      meetingTime: gate?.meetingTime || "",
+      location: gate?.location || "",
+      gateLeader: gate?.gateLeader || "",
+      gateMembers: gate?.gateMembers || [], // Preserve existing members
     });
     setIsSheetOpen(true);
   };
 
   // Delete gate
   const handleDeleteGate = (id) => {
-    setGates((prev) => prev.filter((gate) => gate.id !== id));
+    dispatch(deleteGate(id)).then((res) => {
+      console.log(res);
+      
+      if (res?.payload?.success) {
+        dispatch(getAllGates());
+        toast("Gate deleted successfully");
+      }
+    });
+  };
+  const handleDeleteMember = (index) => {
+    dispatch(deleteGateMember({ gateId: selectedGate._id, index })).then((res) => {
+      console.log(res);
+      
+      if (res?.payload?.success) {
+        dispatch(getAllGates());
+        toast("Member deleted successfully");
+        setIsMemberDialogOpen(false);
+      }
+    });
   };
 
   // Reset form
@@ -180,7 +187,7 @@ const AddGate = () => {
       description: "",
       meetingTime: "",
       location: "",
-      leader: "",
+      gateLeader: "",
     });
     setIsEditMode(false);
     setCurrentGateId(null);
@@ -190,16 +197,23 @@ const AddGate = () => {
   // Calculate statistics
   const calculateStats = () => {
     return {
-      totalGates: gates.length,
-      totalMembers: gates.reduce((sum, gate) => sum + gate.members, 0),
+      totalGates: gates?.length,
+      totalMembers: gates?.reduce(
+        (sum, gate) => sum + gate?.gateMembers?.length,
+        0
+      ),
       avgMembers:
         Math.round(
-          gates.reduce((sum, gate) => sum + gate.members, 0) / gates.length
+          gates?.reduce((sum, gate) => sum + gate?.gateMembers?.length, 0) /
+            gates?.length
         ) || 0,
       mostActive:
-        gates.reduce((max, gate) => (gate.members > max.members ? gate : max), {
-          members: 0,
-        }).name || "None",
+        gates?.reduce(
+          (max, gate) => (gate?.gateMembers?.length > max.gateMembers ? gate : max),
+          {
+            members: 0,
+          }
+        ).name || "None",
     };
   };
 
@@ -306,13 +320,13 @@ const AddGate = () => {
                     </div>
 
                     <div>
-                      <Label className={"py-1.5"} htmlFor="leader">
+                      <Label className={"py-1.5"} htmlFor="gateLeader">
                         Gate Leader *
                       </Label>
                       <Input
-                        id="leader"
-                        name="leader"
-                        value={newGate.leader}
+                        id="gateLeader"
+                        name="gateLeader"
+                        value={newGate.gateLeader}
                         onChange={handleInputChange}
                         required
                       />
@@ -420,14 +434,14 @@ const AddGate = () => {
                   {filteredGates.map((gate) => (
                     <TableRow key={gate.id}>
                       <TableCell className="font-medium">{gate.name}</TableCell>
-                      <TableCell>{gate.leader}</TableCell>
+                      <TableCell>{gate.gateLeader}</TableCell>
                       <TableCell>{gate.location}</TableCell>
                       <TableCell>
                         <Badge
                           variant="outline"
                           className="bg-blue-50 text-blue-700"
                         >
-                          {gate.members} members
+                          {gate.gateMembers?.length} members
                         </Badge>
                       </TableCell>
                       <TableCell className="flex gap-2">
@@ -453,7 +467,7 @@ const AddGate = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleDeleteGate(gate.id)}
+                          onClick={() => handleDeleteGate(gate._id)}
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete
@@ -472,13 +486,13 @@ const AddGate = () => {
           <DialogContent className="sm:max-w-[625px]">
             <DialogHeader>
               <DialogTitle>
-                {selectedGate?.name} Members ({selectedGate?.members})
+                {selectedGate?.name} Members ({selectedGate?.gateMembers?.length})
               </DialogTitle>
             </DialogHeader>
 
             <div className="grid gap-4 py-4">
               {/* Add Member Form */}
-              <form onSubmit={handleAddMember} className="flex gap-2">
+              <form  className="flex gap-2">
                 <Input
                   name="name"
                   value={newMember.name}
@@ -487,14 +501,8 @@ const AddGate = () => {
                   required
                   className="flex-1"
                 />
-                <Input
-                  type="date"
-                  name="joinDate"
-                  value={newMember.joinDate}
-                  onChange={handleMemberInputChange}
-                  className="w-32"
-                />
-                <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+               
+                <Button type="submit" className="bg-blue-600 hover:bg-blue-700" onClick={handleAddMember}>
                   <Plus className="mr-2 h-4 w-4" />
                   Add
                 </Button>
@@ -506,19 +514,16 @@ const AddGate = () => {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Name</TableHead>
-                      <TableHead>Join Date</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {selectedGate?.membersList.map((member) => (
-                      <TableRow key={member.id}>
-                        <TableCell>{member.name}</TableCell>
+                    {selectedGate?.gateMembers?.map((member,index) => (
+                      <TableRow key={index}>
+                        <TableCell>{member}</TableCell>
+                       
                         <TableCell>
-                          {new Date(member.joinDate).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell>
-                          <Button variant="ghost" size="sm">
+                          <Button variant="ghost" size="sm" onClick={() => handleDeleteMember(index)}>
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </TableCell>
@@ -529,7 +534,7 @@ const AddGate = () => {
               </div>
 
               {/* Attendance Statistics */}
-              <div className="grid grid-cols-3 gap-4 mt-4">
+             {/*  <div className="grid grid-cols-3 gap-4 mt-4">
                 <div className="border rounded-lg p-3 text-center">
                   <p className="text-sm text-gray-500">Weekly</p>
                   <p className="text-xl font-bold">
@@ -548,7 +553,7 @@ const AddGate = () => {
                     {selectedGate?.attendance.yearly}
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             <DialogFooter>
