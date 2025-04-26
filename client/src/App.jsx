@@ -40,7 +40,8 @@ const App = () => {
         setAuthChecked(true);
       });
     } else {
-      setAuthChecked(true); // No token, no need to check auth
+      setAuthChecked(true); 
+      // No token, no need to check auth
     }
   }, [dispatch]);
 
