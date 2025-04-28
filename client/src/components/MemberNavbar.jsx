@@ -38,7 +38,7 @@ const MemberNavbar = () => {
         Activities
       </NavLink>
       <NavLink to="/member/gatediscussion" className={linkClass}>
-        Gate Discussion
+        Annoucement
       </NavLink>
     </>
   );
@@ -91,7 +91,7 @@ const MemberNavbar = () => {
         }
         onClick={() => setIsSheetOpen(false)}
       >
-        Gate Forum
+       Annoucement
         <DoorOpen size={20} />
       </NavLink>
       <NavLink

@@ -214,10 +214,7 @@ const Home = () => {
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1">
-                Register Now
-                <ArrowRight className="h-4 w-4" />
-              </Button>
+        
             </div>
           </div>
         </div>

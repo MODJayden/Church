@@ -7,6 +7,7 @@ const connectDB = require("./database/db");
 const cookieParser = require("cookie-parser");
 const memberRouter = require("./router/member");
 const gateRouter = require("./router/gate");
+const activityRouter = require("./router/activity");
 
 //connect to database
 connectDB();
@@ -29,6 +30,7 @@ app.use(cookieParser());
 
 app.use("/api/member", memberRouter);
 app.use("/api/gate", gateRouter);
+app.use("/api/activity", activityRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

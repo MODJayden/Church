@@ -20,13 +20,13 @@ import Auth from "./Pages/CheckAuth";
 import SherpherdLayout from "./Pages/Shepherd/SherpherdLayout";
 import MemberHome from "./Pages/Shepherd/MemberHome";
 import MemberCalender from "./Pages/Shepherd/MemberCalender";
-import MemberGateDiscussion from "./Pages/Shepherd/MemberGateDiscussion";
 import Dashboard from "./Pages/Shepherd/Dashboard";
 import MemberGallery from "./Pages/Shepherd/MemberGallery";
 import AuthLayout from "./Pages/Normal/AuthLayout";
 import NormalLayout from "./Pages/Normal/NormalLayout";
 import Giving from "./Pages/Normal/Giving";
 import Upcoming from "./Pages/Normal/Upcoming";
+import AnnouncementsPage from "./Pages/Shepherd/AnnoucementsPage";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -105,7 +105,7 @@ const App = () => {
           <Route path="giving" element={<Giving />} />
           <Route path="upcoming" element={<Upcoming/>} />
           <Route path="activities" element={<MemberCalender />} />
-          <Route path="gatediscussion" element={<MemberGateDiscussion />} />
+          <Route path="gatediscussion" element={<AnnouncementsPage />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="gallery" element={<MemberGallery />} />
         </Route>

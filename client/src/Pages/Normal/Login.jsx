@@ -53,8 +53,6 @@ const Login = () => {
       setIsSubmitting(true);
       try {
         dispatch(loginMember(formData)).then((res) => {
-          console.log(res);
-
           if (res?.payload?.success) {
             toast("Login successful");
           }
