@@ -1,6 +1,15 @@
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Upload, ImagePlus, X, Loader2 } from "lucide-react";
+import {
+  Upload,
+  ImagePlus,
+  X,
+  Loader2,
+  Images,
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+} from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -18,17 +27,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { createImage, fetchAllImages } from "../../../store/serviceImage";
+import { set } from "date-fns";
+import { toast } from "sonner";
 
 const PictureUpload = () => {
+  const [servicePhotos, setServicePhotos] = useState([]);
+  const [uploadedImageUrls, setUploadedImageUrls] = useState(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const { images } = useSelector((state) => state.serviceImage);
+
   const [previewImages, setPreviewImages] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(images[0]);
+
+  const dispatch = useDispatch();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
+
   const [formData, setFormData] = useState({
-    eventName: "",
-    eventDate: "",
-    description: "",
-    category: "service",
+    title: "",
+    date: "",
+    images: [],
   });
+
+  useEffect(() => {
+    dispatch(fetchAllImages()).then((res) => {
+      console.log(res);
+    });
+  }, [dispatch]);
 
   // Handle file selection
   const handleFileChange = (e) => {
@@ -38,6 +67,7 @@ const PictureUpload = () => {
       preview: URL.createObjectURL(file),
     }));
     setPreviewImages([...previewImages, ...newPreviews]);
+    setServicePhotos(files);
   };
 
   // Remove an image from preview
@@ -59,35 +89,95 @@ const PictureUpload = () => {
     setFormData((prev) => ({ ...prev, category: value }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsUploading(true);
 
+    // Ensure images are properly set
+    const submissionData = {
+      ...formData,
+      images: uploadedImageUrls, // Use the uploaded URLs
+    };
+
     try {
-      // In a real app, you would upload to your backend here
-      console.log("Form data:", formData);
-      console.log("Files to upload:", previewImages);
-
-      // Simulate upload delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // Reset form after successful "upload"
-      setFormData({
-        eventName: "",
-        eventDate: "",
-        description: "",
-        category: "service",
+      dispatch(createImage(submissionData)).then((res) => {
+        if (res?.payload?.success) {
+          dispatch(fetchAllImages());
+          toast.success("Images uploaded successfully!");
+          setIsSheetOpen(false);
+          // Reset states
+          setFormData({
+            title: "",
+            description: "",
+            images: [],
+          });
+          setUploadedImageUrls([]);
+          setPreviewImages([]);
+        }
       });
-      setPreviewImages([]);
-      setIsSheetOpen(false);
-
-      // Show success message or update gallery
     } catch (error) {
-      console.error("Upload error:", error);
+      toast.error("Upload failed");
+      console.error("Submission error:", error);
     } finally {
       setIsUploading(false);
     }
+  };
+  const uploadImagesToCloudinary = async () => {
+    try {
+      setIsUploading(true); // Add a loading state
+      const data = new FormData();
+
+      const files = Array.from(servicePhotos);
+      files.forEach((file, index) => {
+        data.append(`course`, file);
+      });
+
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/serviceImage/upload`,
+        data
+      );
+      if (res?.data?.success) {
+        const uploadedUrls = res?.data?.results?.map(
+          (result) => result?.secure_url
+        );
+        setUploadedImageUrls(uploadedUrls);
+        console.log("Uploaded urls:", uploadedUrls);
+      } else {
+        console.log("Upload failed:", res?.data?.message);
+      }
+    } catch (error) {
+      console.log("Error uploading images:", error.message);
+    } finally {
+      setIsUploading(false); // Reset the loading state
+    }
+  };
+
+  useEffect(() => {
+    if (servicePhotos) {
+      uploadImagesToCloudinary();
+    }
+  }, [servicePhotos]);
+
+  const openImageViewer = (eventIndex, imageIndex) => {
+    setSelectedEvent(images[eventIndex]);
+    setCurrentImageIndex(imageIndex);
+    setIsViewerOpen(true);
+  };
+
+  const closeImageViewer = () => {
+    setIsViewerOpen(false);
+  };
+
+  const goToPrevious = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === 0 ? selectedEvent?.images?.length - 1 : prevIndex - 1
+    );
+  };
+
+  const goToNext = () => {
+    setCurrentImageIndex((prevIndex) =>
+      prevIndex === selectedEvent.images.length - 1 ? 0 : prevIndex + 1
+    );
   };
 
   return (
@@ -119,11 +209,13 @@ const PictureUpload = () => {
                 <form onSubmit={handleSubmit} className="mt-6 space-y-6">
                   <div className="space-y-4">
                     <div>
-                      <Label className={"p-1.5"} htmlFor="eventName">Event Name *</Label>
+                      <Label className={"p-1.5"} htmlFor="title">
+                        Event Name *
+                      </Label>
                       <Input
-                        id="eventName"
-                        name="eventName"
-                        value={formData.eventName}
+                        id="title"
+                        name="title"
+                        value={formData.title}
                         onChange={handleInputChange}
                         required
                       />
@@ -131,18 +223,20 @@ const PictureUpload = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <Label className={"p-1.5"}  htmlFor="eventDate">Event Date *</Label>
+                        <Label className={"p-1.5"} htmlFor="date">
+                          Event Date *
+                        </Label>
                         <Input
-                          id="eventDate"
-                          name="eventDate"
+                          id="date"
+                          name="date"
                           type="date"
-                          value={formData.eventDate}
+                          value={formData.date}
                           onChange={handleInputChange}
                           required
                         />
                       </div>
 
-                      <div>
+                      {/* <div>
                         <Label className={"p-1.5"}  htmlFor="category">Category *</Label>
                         <Select
                           value={formData.category}
@@ -164,10 +258,10 @@ const PictureUpload = () => {
                             <SelectItem value="other">Other</SelectItem>
                           </SelectContent>
                         </Select>
-                      </div>
+                      </div> */}
                     </div>
 
-                    <div>
+                    {/*  <div>
                       <Label className={"p-1.5"}  htmlFor="description">Description</Label>
                       <Textarea
                         id="description"
@@ -176,10 +270,12 @@ const PictureUpload = () => {
                         onChange={handleInputChange}
                         rows={3}
                       />
-                    </div>
+                    </div> */}
 
                     <div>
-                      <Label className={"p-1.5"}  htmlFor="pictures">Pictures *</Label>
+                      <Label className={"p-1.5"} htmlFor="pictures">
+                        Pictures *
+                      </Label>
                       <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg">
                         <div className="space-y-1 text-center">
                           <div className="flex justify-center">
@@ -269,14 +365,100 @@ const PictureUpload = () => {
         </div>
 
         {/* Uploaded Pictures Section */}
-        <div className="bg-gray-50 rounded-lg p-8 text-center">
-          <h2 className="text-xl font-bold text-gray-800 mb-2">
-            Uploaded Pictures
-          </h2>
-          <p className="text-gray-600">
-            Your uploaded pictures will appear here after successful upload
-          </p>
-        </div>
+        {Array.isArray(images) && images?.length === 0 ? (
+          <div className="bg-gray-50 rounded-lg p-8 text-center">
+            <h2 className="text-xl font-bold text-gray-800 mb-2">
+              Uploaded Pictures
+            </h2>
+            <p className="text-gray-600">
+              Your uploaded pictures will appear here after successful upload
+            </p>
+          </div>
+        ) : (
+          <main>
+            <div className="mb-8 flex flex-wrap gap-4 justify-center">
+              {Array.isArray(images) &&
+                images?.map((event) => (
+                <Button
+                  key={event._id}
+                  variant={
+                    selectedEvent?._id === event._id ? "default" : "outline"
+                  }
+                  onClick={() => setSelectedEvent(event)}
+                  className="flex items-center gap-2"
+                >
+                  <Calendar className="h-4 w-4" />
+                  {event.title}
+                </Button>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-12">
+              {selectedEvent?.images?.map((image, index) => (
+                <div
+                  key={index}
+                  className="relative group cursor-pointer rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 aspect-square"
+                  onClick={() =>
+                    openImageViewer(
+                      images.findIndex((e) => e._id === selectedEvent?._id),
+                      index
+                    )
+                  }
+                >
+                  <img
+                    src={images}
+                    alt={`${selectedEvent?.title} - Photo ${index + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                    <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-medium">
+                      View Photo
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Image Viewer Modal */}
+            {isViewerOpen && (
+              <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4">
+                <button
+                  onClick={closeImageViewer}
+                  className="absolute top-4 right-4 text-white hover:text-gray-300"
+                >
+                  ✕
+                </button>
+
+                <button
+                  onClick={goToPrevious}
+                  className="absolute left-4 md:left-8 text-white hover:text-gray-300 p-2"
+                >
+                  <ChevronLeft className="h-8 w-8" />
+                </button>
+
+                <div className="max-w-4xl w-full max-h-[90vh] flex items-center justify-center">
+                  <img
+                    src={selectedEvent?.images[currentImageIndex]}
+                    alt={`${selectedEvent?.title} - Photo ${
+                      currentImageIndex + 1
+                    }`}
+                    className="max-w-full max-h-[90vh] object-contain"
+                  />
+                </div>
+
+                <button
+                  onClick={goToNext}
+                  className="absolute right-4 md:right-8 text-white hover:text-gray-300 p-2"
+                >
+                  <ChevronRight className="h-8 w-8" />
+                </button>
+
+                <div className="absolute bottom-4 left-0 right-0 text-center text-white">
+                  {currentImageIndex + 1} of {selectedEvent?.images?.length} -{" "}
+                  {selectedEvent?.title}
+                </div>
+              </div>
+            )}
+          </main>
+        )}
       </div>
     </section>
   );

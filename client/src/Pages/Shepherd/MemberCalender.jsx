@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   ChevronLeft,
@@ -7,65 +7,10 @@ import {
   Clock,
   MapPin,
 } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllActivities } from "../../../store/activitySlice";
 
 // Sample events data - replace with your actual events
-const churchEvents = [
-  {
-    id: 1,
-    title: "Sunday Service",
-    date: "2025-06-04",
-    time: "8:00 AM - 12:00 PM",
-    location: "Main Sanctuary",
-    description: "Weekly worship service with Holy Communion",
-    category: "service",
-  },
-  {
-    id: 2,
-    title: "Bible Study",
-    date: "2025-06-07",
-    time: "6:00 PM - 7:30 PM",
-    location: "Fellowship Hall",
-    description: "Mid-week Bible study and prayer meeting",
-    category: "study",
-  },
-  {
-    id: 3,
-    title: "Youth Camp",
-    date: "2023-06-10",
-    endDate: "2023-06-12",
-    time: "3:00 PM",
-    location: "Retreat Center",
-    description: "Annual youth spiritual retreat",
-    category: "event",
-  },
-  {
-    id: 4,
-    title: "Men's Fellowship",
-    date: "2023-06-17",
-    time: "9:00 AM - 12:00 PM",
-    location: "Church Grounds",
-    description: "Monthly men's breakfast and fellowship",
-    category: "fellowship",
-  },
-  {
-    id: 5,
-    title: "Choir Practice",
-    date: "2023-06-21",
-    time: "5:30 PM - 7:00 PM",
-    location: "Choir Room",
-    description: "Weekly choir rehearsal",
-    category: "music",
-  },
-  {
-    id: 6,
-    title: "Community Outreach",
-    date: "2023-06-24",
-    time: "8:00 AM - 2:00 PM",
-    location: "Local Community",
-    description: "Neighborhood evangelism and service",
-    category: "outreach",
-  },
-];
 
 // Helper functions
 const months = [
@@ -95,6 +40,8 @@ const getFirstDayOfMonth = (year, month) => {
 
 const Calendar = () => {
   const currentDate = new Date();
+  const dispatch = useDispatch();
+  const { activities, isLoading } = useSelector((state) => state.activity);
   const [currentMonth, setCurrentMonth] = useState(currentDate.getMonth());
   const [currentYear, setCurrentYear] = useState(currentDate.getFullYear());
   const [selectedDate, setSelectedDate] = useState(
@@ -102,6 +49,9 @@ const Calendar = () => {
   );
   const [view, setView] = useState("month"); // 'month' or 'list'
 
+  useEffect(() => {
+    dispatch(fetchAllActivities());
+  }, [dispatch]);
   // Navigation functions
   const prevMonth = () => {
     if (currentMonth === 0) {
@@ -149,7 +99,7 @@ const Calendar = () => {
         2,
         "0"
       )}-${String(day).padStart(2, "0")}`;
-      const dayEvents = churchEvents.filter(
+      const dayEvents = activities?.filter(
         (event) =>
           event.date === dateStr ||
           (event.endDate && dateStr >= event.date && dateStr <= event.endDate)
@@ -180,7 +130,7 @@ const Calendar = () => {
                   ? "bg-green-100 text-green-800"
                   : event.category === "fellowship"
                   ? "bg-yellow-100 text-yellow-800"
-                  : event.category === "music"
+                  : event.category === "camp"
                   ? "bg-red-100 text-red-800"
                   : "bg-gray-100 text-gray-800"
               }`}
@@ -201,7 +151,7 @@ const Calendar = () => {
   };
 
   // Get events for selected date
-  const selectedDateEvents = churchEvents.filter(
+  const selectedDateEvents = activities?.filter(
     (event) =>
       selectedDate >= event.date &&
       (event.endDate
@@ -287,9 +237,9 @@ const Calendar = () => {
               Events in {months[currentMonth]} {currentYear}
             </h3>
             <div className="space-y-4">
-              {churchEvents
-                .filter((event) => {
-                  const eventDate = new Date(event.date);
+              {activities
+                ?.filter((event) => {
+                  const eventDate = new Date(event?.date);
                   return (
                     eventDate.getMonth() === currentMonth &&
                     eventDate.getFullYear() === currentYear
@@ -391,7 +341,7 @@ const Calendar = () => {
                           ? "bg-green-100 text-green-800"
                           : event.category === "fellowship"
                           ? "bg-yellow-100 text-yellow-800"
-                          : event.category === "music"
+                          : event.category === "camp"
                           ? "bg-red-100 text-red-800"
                           : "bg-gray-100 text-gray-800"
                       }`}
