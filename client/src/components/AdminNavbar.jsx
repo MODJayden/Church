@@ -82,7 +82,7 @@ const AdminNavbar = () => {
       </NavLink>
 
       <NavLink
-        to="/resources"
+        to="/admin/uploadresource"
         className={({ isActive }) =>
           `${linkClass({
             isActive,

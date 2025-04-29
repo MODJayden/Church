@@ -3,14 +3,7 @@ import { Download, ShoppingCart, Headphones, Book } from "lucide-react";
 
 // Sample data - replace with your actual content
 const sermons = [
-  {
-    id: 1,
-    title: "The Power of Faith",
-    date: "June 5, 2023",
-    pastor: "Apostle Erick Ampah",
-    audioUrl: "/audio/power-of-faith.mp3",
-    duration: "45:22"
-  },
+  
   {
     id: 2,
     title: "Walking in Victory",
@@ -31,13 +24,9 @@ const sermons = [
 
 const books = [
   {
-    id: 1,
-    title: "The Throne Room Experience",
-    author: "Apostle Erick Ampah",
-    coverUrl: "/books/throne-room-experience.jpg",
-    pdfUrl: "/books/throne-room-experience.pdf"
-  },
-  {
+   
+  
+  
     id: 2,
     title: "Daily Devotions for Victory",
     author: "Apostle Erick Ampah",
@@ -207,7 +196,7 @@ const Resources = () => {
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     <ShoppingCart className="mr-2 h-4 w-4" />
-                    Add to Cart
+                    Buy
                   </Button>
                 </div>
               </div>

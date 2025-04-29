@@ -9,6 +9,9 @@ const memberRouter = require("./router/member");
 const gateRouter = require("./router/gate");
 const activityRouter = require("./router/activity");
 const serviceImageRouter = require("./router/serviceImage");
+const sermonRouter = require("./router/sermon"); 
+const merchandiseItemRouter = require("./router/merchandiseItem");
+const bookRouter = require("./router/book"); // Import the book router
 
 //connect to database
 connectDB();
@@ -36,6 +39,10 @@ app.use("/api/member", memberRouter);
 app.use("/api/gate", gateRouter);
 app.use("/api/activity", activityRouter);
 app.use("/api/serviceImage", serviceImageRouter);
+app.use("/api/sermon", sermonRouter); // Use the sermon router
+app.use("/api/book", bookRouter); 
+app.use("/api/merchandiseItem", merchandiseItemRouter);
+// Use the book router
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

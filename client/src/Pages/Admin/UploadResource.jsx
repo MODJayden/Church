@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Upload, Plus, Loader2, FileAudio, Book, Shirt } from "lucide-react";
+import { Plus, FileAudio, Book, Shirt, Edit, Trash2 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -12,43 +12,44 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import AudioSheet from "@/components/AudioSheet";
+import BookSheet from "@/components/BookSheet";
+import MerchandiseSheet from "@/components/MerchandiseSheet";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllMerchandiseItems } from "../../../store/merchandiseItemSlice";
+import { getAllSermons } from "../../../store/sermon";
+import { getAllBooks } from "../../../store/books";
+import { format } from "date-fns";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const UploadResource = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState({
-    sermon: false,
-    books: false,
-    merchandise: false,
-  });
+  const [isBookSheetOpen, setIsBookSheetOpen] = useState(false);
+  const [isMerchandiseSheetOpen, setIsMerchandiseSheetOpen] = useState(false);
+  const { sermons } = useSelector((state) => state.sermon);
+  const { books } = useSelector((state) => state.books);
+  const { merchandiseItems } = useSelector((state) => state.merchandiseItem);
+
   const [formData, setFormData] = useState({
     title: "",
     author: "",
-    description: "",
-    file: null,
-    price: "",
-    size: "",
-    coverImage: null,
+    pdfUrl: "",
+    coverUrl: "",
   });
-
-  // Handle category selection
-  const handleCategoryChange = (category) => {
-    setSelectedCategories((prev) => ({
-      ...prev,
-      [category]: !prev[category],
-    }));
-
-    // Reset form when changing categories
-    setFormData({
-      title: "",
-      author: "",
-      description: "",
-      file: null,
-      price: "",
-      size: "",
-      coverImage: null,
-    });
-  };
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllMerchandiseItems());
+    dispatch(getAllSermons());
+    dispatch(getAllBooks());
+  }, [dispatch]);
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -56,314 +57,298 @@ const UploadResource = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle file uploads
-  const handleFileChange = (e, fieldName) => {
-    setFormData((prev) => ({ ...prev, [fieldName]: e.target.files[0] }));
-  };
+  return (
+    <section className="bg-white py-24 md:py-24">
+      <div className="container mx-auto px-4">
+        {/* Action Buttons */}
+        <div className="flex flex-wrap gap-4 justify-between items-center mb-12">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+            Church Resources
+          </h1>
+          <div className="flex flex-wrap gap-3">
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <SheetTrigger asChild>
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white gap-2">
+                  <Plus className="h-4 w-4" />
+                  <span className="hidden sm:inline">Add Sermon</span>
+                </Button>
+              </SheetTrigger>
+              <AudioSheet
+                handleInputChange={handleInputChange}
+                isSheetOpen={isSheetOpen}
+                setIsSheetOpen={setIsSheetOpen}
+              />
+            </Sheet>
 
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsUploading(true);
+            <Sheet open={isBookSheetOpen} onOpenChange={setIsBookSheetOpen}>
+              <SheetTrigger asChild>
+                <Button className="bg-green-600 hover:bg-green-700 text-white gap-2">
+                  <Plus className="h-4 w-4" />
+                  <span className="hidden sm:inline">Add Book</span>
+                </Button>
+              </SheetTrigger>
+              <BookSheet
+                handleInputChange={handleInputChange}
+                setIsBookSheetOpen={setIsBookSheetOpen}
+              />
+            </Sheet>
 
-    try {
-      // Prepare form data for API
-      const payload = new FormData();
-      payload.append("title", formData.title);
-      payload.append("description", formData.description);
+            <Sheet
+              open={isMerchandiseSheetOpen}
+              onOpenChange={setIsMerchandiseSheetOpen}
+            >
+              <SheetTrigger asChild>
+                <Button className="bg-purple-600 hover:bg-purple-700 text-white gap-2">
+                  <Plus className="h-4 w-4" />
+                  <span className="hidden sm:inline">Add Merchandise</span>
+                </Button>
+              </SheetTrigger>
+              <MerchandiseSheet
+                handleInputChange={handleInputChange}
+                setIsMerchandiseSheetOpen={setIsMerchandiseSheetOpen}
+              />
+            </Sheet>
+          </div>
+        </div>
 
-      if (selectedCategories.sermon) {
-        payload.append("type", "sermon");
-        payload.append("audio", formData.file);
-        payload.append("preacher", formData.author);
-        payload.append("date", new Date().toISOString());
-      } else if (selectedCategories.books) {
-        payload.append("type", "book");
-        payload.append("pdf", formData.file);
-        payload.append("author", formData.author);
-        payload.append("cover", formData.coverImage);
-      } else if (selectedCategories.merchandise) {
-        payload.append("type", "merchandise");
-        payload.append("image", formData.coverImage);
-        payload.append("price", formData.price);
-        payload.append("size", formData.size);
-      }
+        {/* Resources Grid */}
+        <div className="space-y-12">
+          {/* Sermons Section */}
+          <section>
+            <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
+              <FileAudio className="h-5 w-5 text-blue-500" />
+              Sermons
+            </h2>
+            {sermons?.length === 0 ? (
+              <div className="bg-gray-50 rounded-lg p-8 text-center">
+                <p className="text-gray-600">No sermons uploaded yet</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.isArray(sermons) &&
+                  sermons?.map((sermon) => (
+                    <ResourceCard
+                      key={sermon._id}
+                      type="sermon"
+                      data={sermon}
+                      onEdit={() => handleEditSermon(sermon)}
+                      onDelete={() => handleDeleteSermon(sermon._id)}
+                    />
+                  ))}
+              </div>
+            )}
+          </section>
 
-      // Simulate API call (replace with actual fetch)
-      console.log("Uploading:", Object.fromEntries(payload));
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+          {/* Books Section */}
+          <section>
+            <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
+              <Book className="h-5 w-5 text-green-500" />
+              Books
+            </h2>
+            {books?.length === 0 ? (
+              <div className="bg-gray-50 rounded-lg p-8 text-center">
+                <p className="text-gray-600">No books uploaded yet</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.isArray(books) &&
+                  books?.map((book) => (
+                    <ResourceCard
+                      key={book._id}
+                      type="book"
+                      data={book}
+                      onEdit={() => handleEditBook(book)}
+                      onDelete={() => handleDeleteBook(book._id)}
+                    />
+                  ))}
+              </div>
+            )}
+          </section>
 
-      // Reset form on success
-      setFormData({
-        title: "",
-        author: "",
-        description: "",
-        file: null,
-        price: "",
-        size: "",
-        coverImage: null,
-      });
-      setIsSheetOpen(false);
-    } catch (error) {
-      console.error("Upload error:", error);
-    } finally {
-      setIsUploading(false);
+          {/* Merchandise Section */}
+          <section>
+            <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
+              <Shirt className="h-5 w-5 text-purple-500" />
+              Merchandise
+            </h2>
+            {merchandiseItems?.length === 0 ? (
+              <div className="bg-gray-50 rounded-lg p-8 text-center">
+                <p className="text-gray-600">
+                  No merchandise items uploaded yet
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Array.isArray(merchandiseItems) &&
+                  merchandiseItems?.map((item) => (
+                    <ResourceCard
+                      key={item._id}
+                      type="merchandise"
+                      data={item}
+                      onEdit={() => handleEditMerchandise(item)}
+                      onDelete={() => handleDeleteMerchandise(item._id)}
+                    />
+                  ))}
+              </div>
+            )}
+          </section>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// Reusable Resource Card Component
+const ResourceCard = ({ type, data, onEdit, onDelete }) => {
+  const renderContent = () => {
+    switch (type) {
+      case "sermon":
+        return (
+          <>
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-lg">{data.title}</CardTitle>
+                <Badge variant="outline" className="text-blue-600">
+                  Sermon
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-sm">
+                <p className="flex items-center gap-2">
+                  <span className="font-medium">Pastor:</span>
+                  {data.pastor}
+                </p>
+                <p className="flex items-center gap-2">
+                  <span className="font-medium">Date:</span>
+                  {format(new Date(data.date), "PPP")}
+                </p>
+                <p className="flex items-center gap-2">
+                  <span className="font-medium">Duration:</span>
+                  {data.duration}
+                </p>
+              </div>
+            </CardContent>
+          </>
+        );
+
+      case "book":
+        return (
+          <>
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-lg">{data.title}</CardTitle>
+                <Badge variant="outline" className="text-green-600">
+                  Book
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-sm">
+                <p className="flex items-center gap-2">
+                  <span className="font-medium">Author:</span>
+                  {data.author}
+                </p>
+                {data.coverUrl && (
+                  <div className="mt-3">
+                    <img
+                      src={data.coverUrl}
+                      alt={data.title}
+                      className="h-40 w-full object-contain rounded"
+                    />
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </>
+        );
+
+      case "merchandise":
+        return (
+          <>
+            <CardHeader className="pb-3">
+              <div className="flex justify-between items-start">
+                <CardTitle className="text-lg">{data.name}</CardTitle>
+                <Badge variant="outline" className="text-purple-600">
+                  Merchandise
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-sm">
+                <p className="flex items-center gap-2">
+                  <span className="font-medium">Price:</span>
+                  {data.price}
+                </p>
+                {data.sizes?.length > 0 && (
+                  <p className="flex items-center gap-2">
+                    <span className="font-medium">Sizes:</span>
+                    {data.sizes.join(", ")}
+                  </p>
+                )}
+                {data.imageUrl && (
+                  <div className="mt-3">
+                    <img
+                      src={data.imageUrl}
+                      alt={data.name}
+                      className="h-40 w-full object-contain rounded"
+                    />
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </>
+        );
+
+      default:
+        return null;
     }
   };
 
   return (
-    <section className="bg-white py-20 md:py-24">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-12">
-          <div className="flex items-center gap-3">
-            <Upload className="h-8 w-8 text-blue-500" />
-            <h1 className="text-xl md:text-4xl font-bold text-blue-500">
-              Upload Resources
-            </h1>
-          </div>
-
-          {/* Admin Upload Button */}
-          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-            <SheetTrigger asChild>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Resource
-              </Button>
-            </SheetTrigger>
-            <SheetContent className="w-full sm:max-w-2xl overflow-y-auto">
-              <div className="p-8">
-                <SheetHeader>
-                  <SheetTitle>Upload New Resource</SheetTitle>
-                </SheetHeader>
-
-                {/* Resource Upload Form */}
-                <form onSubmit={handleSubmit} className="mt-6 space-y-6">
-                  {/* Category Selection */}
-                  <div>
-                    <Label className="block mb-3">Resource Type *</Label>
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="sermon"
-                          checked={selectedCategories.sermon}
-                          onCheckedChange={() => handleCategoryChange("sermon")}
-                        />
-                        <Label
-                          htmlFor="sermon"
-                          className="flex items-center gap-2"
-                        >
-                          <FileAudio className="h-4 w-4" />
-                          Sermon Audio
-                        </Label>
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="books"
-                          checked={selectedCategories.books}
-                          onCheckedChange={() => handleCategoryChange("books")}
-                        />
-                        <Label
-                          htmlFor="books"
-                          className="flex items-center gap-2"
-                        >
-                          <Book className="h-4 w-4" />
-                          Books & Publications
-                        </Label>
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        <Checkbox
-                          id="merchandise"
-                          checked={selectedCategories.merchandise}
-                          onCheckedChange={() =>
-                            handleCategoryChange("merchandise")
-                          }
-                        />
-                        <Label
-                          htmlFor="merchandise"
-                          className="flex items-center gap-2"
-                        >
-                          <Shirt className="h-4 w-4" />
-                          Church Merchandise
-                        </Label>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Common Fields */}
-                  <div>
-                    <Label className={"my-2"} htmlFor="title">Title *</Label>
-                    <Input
-                      id="title"
-                      name="title"
-                      value={formData.title}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <Label className={"my-2"}  htmlFor="description">Description</Label>
-                    <Textarea
-                      id="description"
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      rows={3}
-                    />
-                  </div>
-
-                  {/* Dynamic Fields Based on Category */}
-                  {selectedCategories.sermon && (
-                    <>
-                      <div>
-                        <Label className={"my-2"}  htmlFor="preacher">Preacher *</Label>
-                        <Input
-                          id="preacher"
-                          name="author"
-                          value={formData.author}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-
-                      <div>
-                        <Label className={"my-2"}  htmlFor="audio">Audio File * (MP3)</Label>
-                        <Input
-                          id="audio"
-                          type="file"
-                          accept="audio/mp3"
-                          onChange={(e) => handleFileChange(e, "file")}
-                          required
-                        />
-                      </div>
-                    </>
-                  )}
-
-                  {selectedCategories.books && (
-                    <>
-                      <div>
-                        <Label className={"my-2"}  htmlFor="author">Author *</Label>
-                        <Input
-                          id="author"
-                          name="author"
-                          value={formData.author}
-                          onChange={handleInputChange}
-                          required
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label className={"my-2"}  htmlFor="pdf">PDF File *</Label>
-                          <Input
-                            id="pdf"
-                            type="file"
-                            accept=".pdf"
-                            onChange={(e) => handleFileChange(e, "file")}
-                            required
-                          />
-                        </div>
-
-                        <div>
-                          <Label className={"my-2"}  htmlFor="cover">Cover Image *</Label>
-                          <Input
-                            id="cover"
-                            type="file"
-                            accept="image/*"
-                            onChange={(e) => handleFileChange(e, "coverImage")}
-                            required
-                          />
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                  {selectedCategories.merchandise && (
-                    <>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <Label className={"my-2"}  htmlFor="price">Price *</Label>
-                          <Input
-                            id="price"
-                            name="price"
-                            type="text"
-                            value={formData.price}
-                            onChange={handleInputChange}
-                            required
-                          />
-                        </div>
-
-                        <div>
-                          <Label className={"my-2"}  htmlFor="size">Size Options</Label>
-                          <Input
-                            id="size"
-                            name="size"
-                            value={formData.size}
-                            onChange={handleInputChange}
-                            placeholder="S, M, L, XL"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <Label className={"my-2"}  htmlFor="merch-image">Product Image *</Label>
-                        <Input
-                          id="merch-image"
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => handleFileChange(e, "coverImage")}
-                          required
-                        />
-                      </div>
-                    </>
-                  )}
-
-                  <div className="flex justify-end gap-2 pt-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsSheetOpen(false)}
-                      disabled={isUploading}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      className="bg-blue-600 hover:bg-blue-700"
-                      disabled={
-                        isUploading ||
-                        !Object.values(selectedCategories).some(Boolean)
-                      }
-                    >
-                      {isUploading ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Uploading...
-                        </>
-                      ) : (
-                        "Upload Resource"
-                      )}
-                    </Button>
-                  </div>
-                </form>
-              </div>
-            </SheetContent>
-          </Sheet>
-        </div>
-
-        {/* Uploaded Resources Section */}
-        <div className="bg-gray-50 rounded-lg p-8 text-center">
-          <h2 className="text-xl font-bold text-gray-800 mb-2">
-            Uploaded Resources
-          </h2>
-          <p className="text-gray-600">
-            Your uploaded resources will appear here after successful upload
-          </p>
-        </div>
+    <Card className="hover:shadow-lg transition-shadow duration-200 group relative">
+      {/* Action Buttons (shown on hover) */}
+      <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-8 w-8"
+          onClick={onEdit}
+        >
+          <Edit className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-8 w-8 text-red-600 hover:bg-red-50"
+          onClick={onDelete}
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
       </div>
-    </section>
+
+      {renderContent()}
+
+      <CardFooter className="flex justify-between items-center pt-0">
+        <span className="text-xs text-gray-500">
+          Added {format(new Date(data.createdAt), "PP")}
+        </span>
+        {type === "book" && data.pdfUrl && (
+          <Button variant="link" size="sm" asChild>
+            <a href={data.pdfUrl} target="_blank" rel="noopener noreferrer">
+              View PDF
+            </a>
+          </Button>
+        )}
+        {type === "sermon" && data.audioUrl && (
+          <Button variant="link" size="sm" asChild>
+            <a href={data.audioUrl} target="_blank" rel="noopener noreferrer">
+              Listen
+            </a>
+          </Button>
+        )}
+      </CardFooter>
+    </Card>
   );
 };
 
