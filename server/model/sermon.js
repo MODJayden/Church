@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const sermonSchema = new Schema(
   {
     title: String,
-    date: Date, // Using the Date type for dates
+    date: String, // Using the Date type for dates
     pastor: String,
     audioUrl: String,
     duration: String, // Using String for duration (e.g., "HH:MM:SS")

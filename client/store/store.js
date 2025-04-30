@@ -6,7 +6,7 @@ import serviceImageReducer from "./serviceImage";
 import booksReducer from "./books";
 import sermonReducer from "./sermon";
 import merchandiseItemReducer from "./merchandiseItemSlice"; // Added import
-
+import announcementReducer from "./announcementSlice"; // Import announcement reducer
 const store= configureStore({
     reducer: {
         user: userReducer,
@@ -16,7 +16,7 @@ const store= configureStore({
         books: booksReducer,
         sermon: sermonReducer,
         merchandiseItem: merchandiseItemReducer, // Added reducer
-      
+        announcement: announcementReducer, // Add announcement reducer
     },
 });
 

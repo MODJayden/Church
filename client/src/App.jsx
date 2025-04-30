@@ -27,6 +27,7 @@ import NormalLayout from "./Pages/Normal/NormalLayout";
 import Giving from "./Pages/Normal/Giving";
 import Upcoming from "./Pages/Normal/Upcoming";
 import AnnouncementsPage from "./Pages/Shepherd/AnnoucementsPage";
+import AdminAnnouncement from "./Pages/Admin/adminAnnoucement";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -90,6 +91,8 @@ const App = () => {
           <Route path="activities" element={<Activities />} />
           <Route path="upload" element={<PictureUpload />} />
           <Route path="addgate" element={<AddGate />} />
+          <Route path="Annoucements" element={<AdminAnnouncement />} />
+
         </Route>
 
         {/* sHERPHERD */}

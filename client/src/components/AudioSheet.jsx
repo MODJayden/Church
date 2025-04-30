@@ -82,7 +82,8 @@ const AudioSheet = ({ setIsSheetOpen }) => {
 
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/book/upload-thumbnail`,
-        data
+        data,
+      
       );
       if (res?.data?.success) {
         setUploadedAudioFile(res?.data?.result?.secure_url);

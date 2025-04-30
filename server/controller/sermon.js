@@ -13,7 +13,9 @@ const getAllSermons = async (req, res) => {
       success: true,
     });
   } catch (err) {
-    res.status(500).json({ message: "Error retrieving sermons", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error retrieving sermons", error: err.message });
   }
 };
 
@@ -24,12 +26,15 @@ const addSermon = async (req, res) => {
 
     // Basic validation
     if (!title || !date || !pastor || !audioUrl || !duration) {
-        return res.status(400).json({ message: "Missing required sermon fields" });
+      return res
+        .status(400)
+        .json({ message: "Missing required sermon fields" });
     }
 
+    const myDate = date.split("T")[0];
     const sermon = new Sermon({
       title,
-      date,
+      date: myDate,
       pastor,
       audioUrl,
       duration,
@@ -42,7 +47,9 @@ const addSermon = async (req, res) => {
       success: true,
     });
   } catch (err) {
-    res.status(500).json({ message: "Error adding sermon", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error adding sermon", error: err.message });
   }
 };
 
@@ -52,7 +59,10 @@ const updateSermon = async (req, res) => {
     const { id } = req.params;
     const updateData = req.body; // Contains fields to update
 
-    const sermon = await Sermon.findByIdAndUpdate(id, updateData, { new: true, runValidators: true }); // {new: true} returns the updated document
+    const sermon = await Sermon.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    }); // {new: true} returns the updated document
 
     if (!sermon) {
       return res.status(404).json({ message: "Sermon not found" });
@@ -64,7 +74,9 @@ const updateSermon = async (req, res) => {
       success: true,
     });
   } catch (err) {
-    res.status(500).json({ message: "Error updating sermon", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error updating sermon", error: err.message });
   }
 };
 
@@ -85,7 +97,9 @@ const deleteSermon = async (req, res) => {
       data: sermon, // Optionally return the deleted sermon data
     });
   } catch (err) {
-    res.status(500).json({ message: "Error deleting sermon", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error deleting sermon", error: err.message });
   }
 };
 

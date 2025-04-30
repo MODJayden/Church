@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Menu, Home, Image, HandCoins, DoorOpen, BookOpen } from "lucide-react";
+import { Menu, Home, Image, HandCoins, DoorOpen, BookOpen, Speaker } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { signOut } from "../../store/userSlice";
 
@@ -37,6 +37,9 @@ const AdminNavbar = () => {
       </NavLink>
       <NavLink to="/admin/uploadresource" className={linkClass}>
         Resources
+      </NavLink>
+      <NavLink to="/admin/annoucements" className={linkClass}>
+        Annoucement
       </NavLink>
     </>
   );
@@ -92,6 +95,18 @@ const AdminNavbar = () => {
       >
         Resources
         <BookOpen size={20} />
+      </NavLink>
+      <NavLink
+        to="/admin/uploadresource"
+        className={({ isActive }) =>
+          `${linkClass({
+            isActive,
+          })} p-2 flex items-center gap-2 justify-between hover:bg-blue-100 transition-colors duration-150 rounded-md`
+        }
+        onClick={() => setIsSheetOpen(false)}
+      >
+        Annoucements
+        <Speaker size={20} />
       </NavLink>
     </>
   );

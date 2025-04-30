@@ -224,7 +224,7 @@ const AddGate = () => {
       <div className="container mx-auto px-4">
         {/* Page Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
-          <div className="flex items-center gap-3 py-2.5">
+          <div className="flex items-center gap-3 py-2.5 ">
             <DoorOpen className="h-8 w-8 text-blue-500" />
             <h1 className="text-3xl md:text-4xl font-bold text-blue-500">
               Church Gates

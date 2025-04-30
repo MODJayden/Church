@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Calendar,
@@ -13,10 +13,15 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllActivities } from "../../../store/activitySlice";
 
 const Upcoming = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [isRegistering, setIsRegistering] = useState(false);
+  const { activities } = useSelector((state) => state.activity);
+
+  const dispatch=useDispatch()
   const [registrationData, setRegistrationData] = useState({
     name: "",
     email: "",
@@ -26,49 +31,9 @@ const Upcoming = () => {
     notes: "",
   });
  
-
-  // Sample events data - replace with your actual data
-  const events = [
-    {
-      id: 1,
-      title: "Annual Youth Conference",
-      date: "2023-11-15",
-      time: "9:00 AM - 4:00 PM",
-      location: "Church Main Auditorium",
-      description:
-        "A transformative gathering for young people ages 13-30 featuring dynamic worship, powerful teachings, and breakout sessions.",
-      image: "/events/youth-conference.jpg",
-      capacity: 200,
-      registered: 143,
-      details: {
-        speakers: [
-          "Pastor John Mensah",
-          "Minister Grace Owusu",
-          "Elder Kwame Asante",
-        ],
-        requirements: "Bring your Bible, notebook, and lunch money",
-        contact: "youth@throneroom.org / 0244123456",
-      },
-    },
-    {
-      id: 2,
-      title: "Marriage Enrichment Seminar",
-      date: "2023-12-02",
-      time: "10:00 AM - 2:00 PM",
-      location: "Fellowship Hall",
-      description:
-        "Strengthen your marriage through biblical principles and practical tools for communication, conflict resolution, and spiritual growth.",
-      image: "/events/marriage-seminar.jpg",
-      capacity: 50,
-      registered: 32,
-      details: {
-        speakers: ["Dr. & Mrs. Boateng"],
-        requirements:
-          "Couples only, bring your marriage workbook if you have one",
-        contact: "family@throneroom.org",
-      },
-    },
-  ];
+ useEffect(() => {
+    dispatch(fetchAllActivities());
+  }, [dispatch]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -125,22 +90,12 @@ const Upcoming = () => {
         {/* Events Grid */}
         {!selectedEvent ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {events.map((event) => (
+            { Array.isArray(activities) && activities?.map((event) => (
               <div
-                key={event.id}
+                key={event._id}
                 className="border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="h-48 bg-gray-200 overflow-hidden">
-                  <img
-                    src={event.image}
-                    alt={event.title}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src =
-                        "https://via.placeholder.com/400x300?text=Event+Image";
-                    }}
-                  />
-                </div>
+                
                 <div className="p-6">
                   <h2 className="text-xl font-bold mb-2">{event.title}</h2>
 
@@ -170,13 +125,7 @@ const Upcoming = () => {
                   </p>
 
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                      onClick={() => setSelectedEvent(event)}
-                    >
-                      Learn More
-                    </Button>
+                   
                     <Button
                       className="flex-1 bg-blue-600 hover:bg-blue-700"
                       onClick={() => {

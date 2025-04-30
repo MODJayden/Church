@@ -11,7 +11,10 @@ import banner4 from "../../assets/banner4.jpg";
 import move from "../../assets/move.mp4";
 import { CalendarDays, Sparkles, ArrowRight } from "lucide-react";
 
-import { CheckCircle, MapPin } from "lucide-react";
+import { CheckCircle, Calendar, Clock, MapPin, Tag } from "lucide-react";
+import { fetchAllActivities } from "../../../store/activitySlice";
+import { useDispatch, useSelector } from "react-redux";
+import { Card } from "@/components/ui/card";
 
 // Image URLs (same as before)
 const backgroundImages = [banner2, banner, banner3, banner4];
@@ -38,7 +41,8 @@ const aboutUsImagePath = emblem;
 
 const Home = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
+  const { activities } = useSelector((state) => state.activity);
+  const dispatch = useDispatch();
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentImageIndex((prevIndex) =>
@@ -49,6 +53,9 @@ const Home = () => {
     return () => clearInterval(intervalId); // Cleanup interval on component unmount
   }, []);
 
+  useEffect(() => {
+    dispatch(fetchAllActivities());
+  }, [dispatch]);
   return (
     <div className="flex flex-col">
       {" "}
@@ -174,40 +181,53 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <div className="bg-blue-50 border border-blue-100 rounded-lg mx-4 my-6 shadow-sm">
-        <div className="container mx-auto py-5 px-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="hidden sm:flex bg-blue-100 p-3 rounded-full">
-                <CalendarDays className="h-6 w-6 text-blue-600" />
-              </div>
-              <div className="text-center md:text-left">
-                <div className="flex items-center gap-2 justify-center md:justify-start mb-1">
-                  <Sparkles className="h-4 w-4 text-blue-500 sm:hidden" />
-                  <h3 className="text-sm font-semibold text-blue-600 uppercase tracking-wider">
-                    Upcoming Event
-                  </h3>
-                </div>
-                <p className="text-lg font-medium text-gray-800">
-                  Shofar Camp 2025
-                </p>
-                <p className="text-sm text-gray-600">
-                  October 10-15, 2025 • Theme: "The Glory of the Latter House"
-                </p>
-                <p className="text-sm text-gray-600">@ University of Ghana</p>
-              </div>
+      <h2 className="text-2xl md:text-4xl font-bold text-blue-600 my-12 text-center">
+          Upcoming Event
+        </h2>
+      
+       
+      
+
+        {/* Event Content */}
+        <Card className="p-6 w-full m-4">
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+            {Array.isArray(activities) && activities[0]?.title}
+          </h2>
+          <p className="text-gray-600 mb-4">
+            {Array.isArray(activities) && activities[0]?.description}
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+            <div className="flex items-center text-gray-700">
+              <Calendar className="w-5 h-5 mr-2 text-blue-500" />
+              <span>{activities[0]?.date}</span>
             </div>
-            <div className="flex gap-3">
-              <Link to="/upcoming">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1">
-                  Register Now
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
+
+            <div className="flex items-center text-gray-700">
+              <Clock className="w-5 h-5 mr-2 text-blue-500" />
+              <span>{Array.isArray(activities) && activities[0]?.time}</span>
+            </div>
+
+            <div className="flex items-center text-gray-700">
+              <MapPin className="w-5 h-5 mr-2 text-blue-500" />
+              <span>
+                {Array.isArray(activities) && activities[0]?.location}
+              </span>
+            </div>
+
+            <div className="flex items-center">
+              <Tag className="w-5 h-5 mr-2 text-blue-500" />
+              <span className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
+                {Array.isArray(activities) && activities[0]?.category}
+              </span>
             </div>
           </div>
-        </div>
-      </div>
+
+          <Link to={"/upcoming"} className="bg-blue-600 text-center hover:bg-blue-700 text-white font-medium py-2 px-5 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5">
+            Learn More
+          </Link>
+        </Card>
+     
       {/* --- End Mission & Vision Section --- */}
       {/* --- About the Pioneer Section --- */}
       <section className="bg-gray-50 py-16 md:py-24">

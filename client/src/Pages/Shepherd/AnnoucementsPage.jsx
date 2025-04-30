@@ -8,55 +8,25 @@ import {
 } from "@/components/ui/card";
 import { Calendar, Clock, User, Megaphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllAnnouncements } from "../../../store/announcementSlice";
 
 const AnnouncementsPage = () => {
-  const [announcements, setAnnouncements] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const dispatch = useDispatch();
+  const {
+    announcements,
+    isLoading,
+    error, // Get loading and error state
+  } = useSelector((state) => state.announcement);
 
-  // Fetch announcements from API
+  
+  const [isSheetOpen, setIsSheetOpen] = useState(false); // Renamed for clarity
+
+  // Fetch announcements on component mount
   useEffect(() => {
-    const fetchAnnouncements = async () => {
-      try {
-        // Replace with actual API call
-        const mockAnnouncements = [
-          {
-            id: 1,
-            title: "Sunday Service Time Change",
-            content:
-              "Starting next week, Sunday services will begin at 9:30 AM instead of 10:00 AM.",
-            date: "2024-06-15",
-            author: "Pastor John",
-            category: "Service Update",
-          },
-          {
-            id: 2,
-            title: "Church Picnic Announcement",
-            content:
-              "Join us for our annual church picnic on July 20th at Riverside Park. Food and games for all ages!",
-            date: "2024-06-10",
-            author: "Sister Mary",
-            category: "Event",
-          },
-          {
-            id: 3,
-            title: "Bible Study Cancellation",
-            content:
-              "Wednesday night Bible study is cancelled this week due to the holiday.",
-            date: "2024-06-05",
-            author: "Deacon James",
-            category: "Schedule Change",
-          },
-        ];
-        setAnnouncements(mockAnnouncements);
-      } catch (error) {
-        console.error("Error fetching announcements:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    dispatch(getAllAnnouncements());
+  }, [dispatch]);
 
-    fetchAnnouncements();
-  }, []);
 
   return (
     <div className="container mx-auto px-4 py-24">

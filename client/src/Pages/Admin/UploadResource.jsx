@@ -207,7 +207,7 @@ const ResourceCard = ({ type, data, onEdit, onDelete }) => {
           <>
             <CardHeader className="pb-3">
               <div className="flex justify-between items-start">
-                <CardTitle className="text-lg">{data.title}</CardTitle>
+                <CardTitle className="text-wrap text-lg">{data.title}</CardTitle>
                 <Badge variant="outline" className="text-blue-600">
                   Sermon
                 </Badge>
@@ -277,7 +277,7 @@ const ResourceCard = ({ type, data, onEdit, onDelete }) => {
             <CardContent>
               <div className="space-y-2 text-sm">
                 <p className="flex items-center gap-2">
-                  <span className="font-medium">Price:</span>
+                  <span className="font-medium">Price:GH₵</span>
                   {data.price}
                 </p>
                 {data.sizes?.length > 0 && (
@@ -308,7 +308,7 @@ const ResourceCard = ({ type, data, onEdit, onDelete }) => {
   return (
     <Card className="hover:shadow-lg transition-shadow duration-200 group relative">
       {/* Action Buttons (shown on hover) */}
-      <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute bottom-6 right-27 flex gap-2  ">
         <Button
           variant="outline"
           size="icon"
