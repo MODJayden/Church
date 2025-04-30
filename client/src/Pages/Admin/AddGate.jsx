@@ -220,7 +220,7 @@ const AddGate = () => {
   const stats = calculateStats();
 
   return (
-    <section className="bg-white py-16 md:py-24">
+    <section className="bg-white py-24 md:py-24">
       <div className="container mx-auto px-4">
         {/* Page Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
